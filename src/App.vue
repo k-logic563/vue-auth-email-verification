@@ -1,27 +1,36 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div>
+    <Header />
+    <div class="container py-5">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import { onAuthStateChanged } from "firebase/auth";
+
+import Header from "@/components/Header.vue";
+
+import * as store from "@/store";
+import * as api from "@/api";
 
 export default defineComponent({
-  name: "App",
   components: {
-    HelloWorld,
+    Header,
+  },
+  async created() {
+    const authStore = store.auth.useStore();
+    onAuthStateChanged(api.auth.auth, (user) => {
+      if (user) {
+        authStore.user = user;
+        this.$router.push("/");
+        return;
+      }
+      authStore.user = null;
+      this.$router.push("/entry");
+    });
   },
 });
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
