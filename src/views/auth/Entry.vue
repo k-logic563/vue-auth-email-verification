@@ -6,8 +6,8 @@
         id="email"
         type="email"
         class="form-control"
-        required
         v-model="email"
+        required
       />
     </div>
     <input type="submit" class="btn btn-primary" value="送信する" />
@@ -29,19 +29,17 @@ export default defineComponent({
   },
   methods: {
     signin() {
-      if (this.email) {
-        api.auth
-          .signInLinkToEmail(this.email)
-          .then(() => {
-            window.localStorage.setItem("emailForSignIn", this.email);
-            this.$router.push("/confirm");
-          })
-          .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(`${errorCode}: ${errorMessage}`);
-          });
-      }
+      api.auth
+        .signInLinkToEmail(this.email)
+        .then(() => {
+          window.localStorage.setItem("emailForSignIn", this.email);
+          this.$router.push("/confirm");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(`${errorCode}: ${errorMessage}`);
+        });
     },
   },
 });
